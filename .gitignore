@@ -1,0 +1,27 @@
+# Dados locais da extensao
+extension/*.local
+extension/storage/
+*.db
+*.db-wal
+*.db-shm
+
+# Configuracoes locais
+config.json
+usage.json
+
+# Temporarios
+*.tmp
+*.bak
+*.log
+*.lnk
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
