@@ -3,27 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI Usage Monitor</title>
+  <title>ChatGPT Usage Monitor</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <div class="container">
     <div class="header">
-      <h1>AI Usage</h1>
+      <h1>ChatGPT Usage</h1>
       <div class="header-controls">
         <button id="settings-toggle" class="icon-btn" title="Configurações">⚙️</button>
         <button id="theme-toggle" class="icon-btn" title="Tema">Tema</button>
         <button id="refresh" class="icon-btn" title="Atualizar">↻</button>
       </div>
     </div>
-
-    <label class="provider-selector" for="provider">
-      Serviço
-      <select id="provider">
-        <option value="chatgpt">ChatGPT</option>
-        <option value="claude">Claude</option>
-      </select>
-    </label>
 
     <!-- Painel de Configurações -->
     <div id="settings-panel" class="settings-panel hidden">
@@ -45,13 +37,13 @@
 
     <div id="loading" class="loading">Carregando...</div>
     <div id="error" class="error hidden"></div>
-    
+
     <div id="content" class="hidden">
       <!-- Tipo de Plano -->
       <div class="plan-badge">
         <span id="plan-type">Plano: --</span>
       </div>
-      
+
       <!-- Limite 5 Horas -->
       <div class="usage-section">
         <h2>Limite 5 Horas</h2>
@@ -63,7 +55,7 @@
           <span id="primary-reset" class="reset-time">Reset: --</span>
         </div>
       </div>
-      
+
       <!-- Limite 7 Dias -->
       <div class="usage-section">
         <h2>Limite 7 Dias</h2>
@@ -75,7 +67,7 @@
           <span id="secondary-reset" class="reset-time">Reset: --</span>
         </div>
       </div>
-      
+
       <!-- Créditos -->
       <div id="credits-section" class="usage-section hidden">
         <h2>Créditos</h2>
@@ -84,7 +76,7 @@
           <span id="credit-balance" class="credit-value">0</span>
         </div>
       </div>
-      
+
       <!-- LGPD: Controles de Privacidade -->
       <div class="privacy-section">
         <h3>Privacidade (LGPD)</h3>
@@ -94,13 +86,13 @@
           <button id="delete-data" class="privacy-btn delete-btn">Deletar Tudo</button>
         </div>
       </div>
-      
+
       <div class="footer">
         <span id="last-updated">Atualizado: --</span>
       </div>
     </div>
   </div>
-  
+
   <script src="popup.js"></script>
 </body>
 </html>

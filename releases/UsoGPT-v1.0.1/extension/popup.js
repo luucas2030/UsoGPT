@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('refresh').addEventListener('click', refreshData);
   document.getElementById('save-settings').addEventListener('click', saveSettings);
   document.getElementById('provider').addEventListener('change', changeProvider);
-  
+
   // LGPD: Botões de privacidade
   document.getElementById('delete-data')?.addEventListener('click', deleteAllData);
   document.getElementById('export-data')?.addEventListener('click', exportData);
@@ -29,7 +29,7 @@ function initializeTheme() {
 }
 
 function toggleTheme() {
-  currentTheme = currentTheme === 'auto' ? 'light' : 
+  currentTheme = currentTheme === 'auto' ? 'light' :
                  currentTheme === 'light' ? 'dark' : 'auto';
   chrome.storage.local.set({ theme: currentTheme });
   applyTheme();
@@ -38,9 +38,9 @@ function toggleTheme() {
 function applyTheme() {
   const body = document.body;
   const themeBtn = document.getElementById('theme-toggle');
-  
+
   body.classList.remove('light-theme', 'dark-theme');
-  
+
   if (currentTheme === 'auto') {
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
     body.classList.add(prefersDark ? 'dark-theme' : 'light-theme');
@@ -72,11 +72,11 @@ function saveSettings() {
   const selected = document.querySelector('input[name="badge-metric"]:checked');
   chrome.storage.local.set({ badgeMetric: selected.value }, () => {
     chrome.runtime.sendMessage({ action: 'refresh', provider: currentProvider });
-    
+
     const btn = document.getElementById('save-settings');
     btn.textContent = '✓ Salvo!';
     btn.style.background = '#4CAF50';
-    
+
     setTimeout(() => {
       btn.textContent = 'Salvar';
       btn.style.background = '';
@@ -160,7 +160,7 @@ function displayUsageData(data) {
     planBadge.textContent = `Plano: ${data.plan_type.toUpperCase()}`;
     planBadge.className = 'plan-badge ' + data.plan_type;
   }
-  
+
   // 5-Hour Rate Limit
   if (data.rate_limit?.primary_window) {
     updateUsageSection(
@@ -169,7 +169,7 @@ function displayUsageData(data) {
       data.rate_limit.primary_window.reset_at
     );
   }
-  
+
   // 7-Day Rate Limit
   if (data.rate_limit?.secondary_window) {
     updateUsageSection(
@@ -178,22 +178,22 @@ function displayUsageData(data) {
       data.rate_limit.secondary_window.reset_at
     );
   }
-  
+
   // Créditos
   if (data.credits && data.credits.balance !== '0') {
     document.getElementById('credits-section')?.classList.remove('hidden');
     document.getElementById('credit-balance').textContent = data.credits.balance;
   }
-  
+
   // Última atualização
   if (data.last_updated) {
     const date = new Date(data.last_updated);
-    document.getElementById('last-updated').textContent = 
+    document.getElementById('last-updated').textContent =
       `Atualizado: ${formatTime(date)}`;
   }
-  
+
   // LGPD: Mostrar política de retenção
-  document.getElementById('retention-info').textContent = 
+  document.getElementById('retention-info').textContent =
     `Dados mantidos por 30 dias (LGPD)`;
 }
 
@@ -202,17 +202,17 @@ function updateUsageSection(prefix, utilization, resetAt) {
   const bar = document.getElementById(`${prefix}-bar`);
   const percentSpan = document.getElementById(`${prefix}-percent`);
   const resetSpan = document.getElementById(`${prefix}-reset`);
-  
+
   if (bar) {
     bar.style.width = `${percent}%`;
     bar.className = 'usage-bar ' + getUsageClass(percent);
   }
-  
+
   if (percentSpan) {
     percentSpan.textContent = `${percent}%`;
     percentSpan.className = 'usage-percent ' + getUsageClass(percent);
   }
-  
+
   if (resetSpan && resetAt) {
     const resetDate = typeof resetAt === 'number' ? new Date(resetAt * 1000) : new Date(resetAt);
     resetSpan.textContent = `Reset: ${getTimeUntil(resetDate)}`;
@@ -229,10 +229,10 @@ function getUsageClass(percent) {
 function getTimeUntil(date) {
   const diff = date - new Date();
   if (diff < 0) return 'agora';
-  
+
   const hours = Math.floor(diff / (1000 * 60 * 60));
   const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-  
+
   if (hours > 24) {
     const days = Math.floor(hours / 24);
     return `${days}d ${hours % 24}h`;
@@ -253,7 +253,7 @@ function deleteAllData() {
   if (!confirm('Tem certeza? Todos os dados serão deletados permanentemente.')) {
     return;
   }
-  
+
   chrome.runtime.sendMessage({ action: 'deleteAllData' }, (response) => {
     if (response?.success) {
       alert('Todos os dados foram deletados.');
@@ -268,7 +268,7 @@ function exportData() {
   chrome.runtime.sendMessage({ action: 'exportData' }, (data) => {
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
-    
+
     // Criar download manualmente (sem permissão downloads)
     const a = document.createElement('a');
     a.href = url;

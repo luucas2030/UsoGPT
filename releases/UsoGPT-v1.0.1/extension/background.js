@@ -49,13 +49,13 @@ async function fetchChatGPTUsageData() {
         'Authorization': `Bearer ${accessToken}`
       }
     });
-    
+
     if (!response.ok) {
       throw new Error(`HTTP ${response.status}: ${response.statusText}`);
     }
-    
+
     const data = await response.json();
-    
+
     const usageData = {
       ...data,
       provider: 'chatgpt',
@@ -199,14 +199,14 @@ async function syncToDashboard(data) {
 async function cleanOldData() {
   const result = await chrome.storage.local.get(['usageHistory']);
   const history = result.usageHistory || [];
-  
+
   const cutoffDate = new Date();
   cutoffDate.setDate(cutoffDate.getDate() - DATA_RETENTION_DAYS);
-  
-  const filteredHistory = history.filter(item => 
+
+  const filteredHistory = history.filter(item =>
     new Date(item.timestamp) > cutoffDate
   );
-  
+
   if (filteredHistory.length !== history.length) {
     await chrome.storage.local.set({ usageHistory: filteredHistory });
   }
@@ -245,19 +245,19 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     refreshProviderData(request.provider).then(sendResponse);
     return true;
   }
-  
+
   if (request.action === 'getData') {
     getProviderData(request.provider).then(sendResponse);
     return true;
   }
-  
+
   if (request.action === 'deleteAllData') {
     deleteAllData().then(() => {
       sendResponse({ success: true });
     });
     return true;
   }
-  
+
   if (request.action === 'exportData') {
     chrome.storage.local.get(['chatgptUsageData', 'claudeUsageData'], sendResponse);
     return true;

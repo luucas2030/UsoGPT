@@ -1,19 +1,17 @@
-// AI Usage Monitor - LGPD Safe Popup
+// ChatGPT Usage Monitor - LGPD Safe Popup
 
 let currentTheme = 'auto';
-let currentProvider = 'chatgpt';
 
 document.addEventListener('DOMContentLoaded', () => {
   initializeTheme();
   loadSettings();
-  loadProvider();
+  loadUsageData();
 
   document.getElementById('settings-toggle').addEventListener('click', toggleSettings);
   document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
   document.getElementById('refresh').addEventListener('click', refreshData);
   document.getElementById('save-settings').addEventListener('click', saveSettings);
-  document.getElementById('provider').addEventListener('change', changeProvider);
-  
+
   // LGPD: Botões de privacidade
   document.getElementById('delete-data')?.addEventListener('click', deleteAllData);
   document.getElementById('export-data')?.addEventListener('click', exportData);
@@ -29,7 +27,7 @@ function initializeTheme() {
 }
 
 function toggleTheme() {
-  currentTheme = currentTheme === 'auto' ? 'light' : 
+  currentTheme = currentTheme === 'auto' ? 'light' :
                  currentTheme === 'light' ? 'dark' : 'auto';
   chrome.storage.local.set({ theme: currentTheme });
   applyTheme();
@@ -38,9 +36,9 @@ function toggleTheme() {
 function applyTheme() {
   const body = document.body;
   const themeBtn = document.getElementById('theme-toggle');
-  
+
   body.classList.remove('light-theme', 'dark-theme');
-  
+
   if (currentTheme === 'auto') {
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
     body.classList.add(prefersDark ? 'dark-theme' : 'light-theme');
@@ -71,34 +69,17 @@ function loadSettings() {
 function saveSettings() {
   const selected = document.querySelector('input[name="badge-metric"]:checked');
   chrome.storage.local.set({ badgeMetric: selected.value }, () => {
-    chrome.runtime.sendMessage({ action: 'refresh', provider: currentProvider });
-    
+    chrome.runtime.sendMessage({ action: 'refresh' });
+
     const btn = document.getElementById('save-settings');
     btn.textContent = '✓ Salvo!';
     btn.style.background = '#4CAF50';
-    
+
     setTimeout(() => {
       btn.textContent = 'Salvar';
       btn.style.background = '';
       toggleSettings();
     }, 1000);
-  });
-}
-
-function loadProvider() {
-  chrome.storage.local.get({ activeProvider: 'chatgpt' }, (settings) => {
-    currentProvider = settings.activeProvider;
-    document.getElementById('provider').value = currentProvider;
-    loadUsageData();
-  });
-}
-
-function changeProvider(event) {
-  currentProvider = event.target.value;
-  chrome.storage.local.set({ activeProvider: currentProvider }, () => {
-    chrome.runtime.sendMessage({ action: 'refresh', provider: currentProvider }, () => {
-      loadUsageData();
-    });
   });
 }
 
@@ -109,7 +90,7 @@ function refreshData() {
   btn.disabled = true;
   btn.textContent = '⟳';
 
-  chrome.runtime.sendMessage({ action: 'refresh', provider: currentProvider }, () => {
+  chrome.runtime.sendMessage({ action: 'refresh' }, () => {
     loadUsageData();
     btn.disabled = false;
     btn.textContent = '↻';
@@ -117,40 +98,31 @@ function refreshData() {
 }
 
 function loadUsageData() {
-  if (currentProvider === 'chatgpt') {
-    // Keep the original V1.0 read path for ChatGPT data.
-    chrome.storage.local.get(['usageData', 'lastError'], displayStoredUsageData);
-    return;
-  }
+  chrome.storage.local.get(['usageData', 'lastError'], (result) => {
+    const loading = document.getElementById('loading');
+    const error = document.getElementById('error');
+    const content = document.getElementById('content');
 
-  chrome.runtime.sendMessage({ action: 'getData', provider: 'claude' }, displayStoredUsageData);
-}
+    loading.classList.add('hidden');
 
-function displayStoredUsageData(result) {
-  result = result || {};
-  const loading = document.getElementById('loading');
-  const error = document.getElementById('error');
-  const content = document.getElementById('content');
+    if (result.lastError && !result.usageData) {
+      error.textContent = `Erro: ${result.lastError}`;
+      error.classList.remove('hidden');
+      content.classList.add('hidden');
+      return;
+    }
 
-  loading.classList.add('hidden');
+    if (!result.usageData) {
+      error.textContent = 'Sem dados. Acesse chatgpt.com primeiro.';
+      error.classList.remove('hidden');
+      content.classList.add('hidden');
+      return;
+    }
 
-  if (result.lastError && !result.usageData) {
-    error.textContent = `Erro: ${result.lastError}`;
-    error.classList.remove('hidden');
-    content.classList.add('hidden');
-    return;
-  }
-
-  if (!result.usageData) {
-    error.textContent = `Sem dados. Acesse ${currentProvider === 'claude' ? 'claude.ai' : 'chatgpt.com'} primeiro.`;
-    error.classList.remove('hidden');
-    content.classList.add('hidden');
-    return;
-  }
-
-  error.classList.add('hidden');
-  content.classList.remove('hidden');
-  displayUsageData(result.usageData);
+    error.classList.add('hidden');
+    content.classList.remove('hidden');
+    displayUsageData(result.usageData);
+  });
 }
 
 function displayUsageData(data) {
@@ -160,7 +132,7 @@ function displayUsageData(data) {
     planBadge.textContent = `Plano: ${data.plan_type.toUpperCase()}`;
     planBadge.className = 'plan-badge ' + data.plan_type;
   }
-  
+
   // 5-Hour Rate Limit
   if (data.rate_limit?.primary_window) {
     updateUsageSection(
@@ -169,7 +141,7 @@ function displayUsageData(data) {
       data.rate_limit.primary_window.reset_at
     );
   }
-  
+
   // 7-Day Rate Limit
   if (data.rate_limit?.secondary_window) {
     updateUsageSection(
@@ -178,22 +150,22 @@ function displayUsageData(data) {
       data.rate_limit.secondary_window.reset_at
     );
   }
-  
+
   // Créditos
   if (data.credits && data.credits.balance !== '0') {
     document.getElementById('credits-section')?.classList.remove('hidden');
     document.getElementById('credit-balance').textContent = data.credits.balance;
   }
-  
+
   // Última atualização
   if (data.last_updated) {
     const date = new Date(data.last_updated);
-    document.getElementById('last-updated').textContent = 
+    document.getElementById('last-updated').textContent =
       `Atualizado: ${formatTime(date)}`;
   }
-  
+
   // LGPD: Mostrar política de retenção
-  document.getElementById('retention-info').textContent = 
+  document.getElementById('retention-info').textContent =
     `Dados mantidos por 30 dias (LGPD)`;
 }
 
@@ -202,19 +174,19 @@ function updateUsageSection(prefix, utilization, resetAt) {
   const bar = document.getElementById(`${prefix}-bar`);
   const percentSpan = document.getElementById(`${prefix}-percent`);
   const resetSpan = document.getElementById(`${prefix}-reset`);
-  
+
   if (bar) {
     bar.style.width = `${percent}%`;
     bar.className = 'usage-bar ' + getUsageClass(percent);
   }
-  
+
   if (percentSpan) {
     percentSpan.textContent = `${percent}%`;
     percentSpan.className = 'usage-percent ' + getUsageClass(percent);
   }
-  
+
   if (resetSpan && resetAt) {
-    const resetDate = typeof resetAt === 'number' ? new Date(resetAt * 1000) : new Date(resetAt);
+    const resetDate = new Date(resetAt * 1000);
     resetSpan.textContent = `Reset: ${getTimeUntil(resetDate)}`;
   }
 }
@@ -229,10 +201,10 @@ function getUsageClass(percent) {
 function getTimeUntil(date) {
   const diff = date - new Date();
   if (diff < 0) return 'agora';
-  
+
   const hours = Math.floor(diff / (1000 * 60 * 60));
   const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-  
+
   if (hours > 24) {
     const days = Math.floor(hours / 24);
     return `${days}d ${hours % 24}h`;
@@ -253,7 +225,7 @@ function deleteAllData() {
   if (!confirm('Tem certeza? Todos os dados serão deletados permanentemente.')) {
     return;
   }
-  
+
   chrome.runtime.sendMessage({ action: 'deleteAllData' }, (response) => {
     if (response?.success) {
       alert('Todos os dados foram deletados.');
@@ -268,11 +240,11 @@ function exportData() {
   chrome.runtime.sendMessage({ action: 'exportData' }, (data) => {
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
-    
+
     // Criar download manualmente (sem permissão downloads)
     const a = document.createElement('a');
     a.href = url;
-    a.download = `ai-usage-${new Date().toISOString().split('T')[0]}.json`;
+    a.download = `chatgpt-usage-${new Date().toISOString().split('T')[0]}.json`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);

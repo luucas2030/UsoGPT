@@ -101,51 +101,51 @@ body.dark-theme .settings-panel { background: #252525; border-color: #404040; }
 .save-btn:hover { background: #0d8a6c; }
 
 /* LGPD Privacy Section */
-.privacy-section { 
-  margin-top: 20px; 
-  padding: 12px; 
-  border-radius: 8px; 
+.privacy-section {
+  margin-top: 20px;
+  padding: 12px;
+  border-radius: 8px;
   border: 1px solid;
 }
-.privacy-section h3 { 
-  font-size: 12px; 
-  font-weight: 600; 
-  margin-bottom: 8px; 
+.privacy-section h3 {
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 8px;
   text-transform: none;
   letter-spacing: 0;
 }
-.retention-info { 
-  font-size: 11px; 
-  color: #888; 
-  margin-bottom: 12px; 
+.retention-info {
+  font-size: 11px;
+  color: #888;
+  margin-bottom: 12px;
 }
-.privacy-buttons { 
-  display: flex; 
-  gap: 8px; 
+.privacy-buttons {
+  display: flex;
+  gap: 8px;
 }
-.privacy-btn { 
-  flex: 1; 
-  padding: 8px; 
-  border-radius: 4px; 
-  border: none; 
-  font-size: 11px; 
-  font-weight: 600; 
-  cursor: pointer; 
+.privacy-btn {
+  flex: 1;
+  padding: 8px;
+  border-radius: 4px;
+  border: none;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
   transition: background 0.2s;
 }
-.export-btn { 
-  background: #2196F3; 
-  color: white; 
+.export-btn {
+  background: #2196F3;
+  color: white;
 }
-.export-btn:hover { 
-  background: #1976D2; 
+.export-btn:hover {
+  background: #1976D2;
 }
-.delete-btn { 
-  background: #f44336; 
-  color: white; 
+.delete-btn {
+  background: #f44336;
+  color: white;
 }
-.delete-btn:hover { 
-  background: #d32f2f; 
+.delete-btn:hover {
+  background: #d32f2f;
 }
 
 /* Scrollbar */
