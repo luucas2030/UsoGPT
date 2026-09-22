@@ -44,12 +44,16 @@ O seletor no popup define qual servico sera exibido e qual percentual aparecera 
 - Exportacao dos dados locais em JSON.
 - Exclusao de todos os dados armazenados pela extensao.
 
-## Downloads
+## Download
 
-| Versao | Conteudo | Download |
-|---|---|---|
-| V1.0 | Monitoramento do ChatGPT | [UsoGPT-v1.0.zip](releases/UsoGPT-v1.0.zip) |
-| V1.0.1 | ChatGPT e Claude | [UsoGPT-v1.0.1.zip](releases/UsoGPT-v1.0.1.zip) |
+Baixe apenas a versao que precisa pelo seletor de branches do GitHub:
+
+| Branch | Conteudo |
+|---|---|
+| [`master`](../../tree/master) | V1.0, monitoramento somente do ChatGPT |
+| [`release/v1.0.1`](../../tree/release/v1.0.1) | V1.0.1, monitoramento do ChatGPT e Claude |
+
+Na branch desejada, clique em **Code** e depois em **Download ZIP**. O arquivo baixado contem somente aquela versao da extensao.
 
 ## Instalacao
 
@@ -116,9 +120,6 @@ Os endpoints utilizados sao internos aos servicos web e podem ser alterados pelo
 UsoGPT/
 |-- extension/                    # Codigo fonte da V1.0.1
 |-- docs/screenshots/             # Imagens da documentacao
-|-- releases/
-|   |-- UsoGPT-v1.0.zip           # Pacote ChatGPT
-|   `-- UsoGPT-v1.0.1.zip         # Pacote ChatGPT + Claude
 `-- README.md
 ```
 
