@@ -3,19 +3,27 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ChatGPT Usage Monitor</title>
+  <title>AI Usage Monitor</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <div class="container">
     <div class="header">
-      <h1>ChatGPT Usage</h1>
+      <h1>AI Usage</h1>
       <div class="header-controls">
         <button id="settings-toggle" class="icon-btn" title="Configurações">⚙️</button>
         <button id="theme-toggle" class="icon-btn" title="Tema">Tema</button>
         <button id="refresh" class="icon-btn" title="Atualizar">↻</button>
       </div>
     </div>
+
+    <label class="provider-selector" for="provider">
+      Serviço
+      <select id="provider">
+        <option value="chatgpt">ChatGPT</option>
+        <option value="claude">Claude</option>
+      </select>
+    </label>
 
     <!-- Painel de Configurações -->
     <div id="settings-panel" class="settings-panel hidden">

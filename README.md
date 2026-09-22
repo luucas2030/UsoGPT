@@ -1,230 +1,137 @@
 <div align="center">
 
-# ChatGPT Usage Monitor
+# AI Usage Monitor
 
-### Extensao Chrome para monitorar uso do ChatGPT Plus
+### Extensao Chrome para acompanhar os limites do ChatGPT e Claude
 
-[![LGPD](https://img.shields.io/badge/LGPD-Compliant-green?style=for-the-badge)](#lgpd)
-[![Privacy](https://img.shields.io/badge/Privacidade-100%25%20Local-blue?style=for-the-badge)](#privacidade)
-[![Chrome](https://img.shields.io/badge/Chrome-Extension-orange?style=for-the-badge)](#instalacao)
-
----
+[![Versao](https://img.shields.io/badge/versao-1.0.1-2f855a?style=for-the-badge)](#v101)
+[![Chrome](https://img.shields.io/badge/Chrome-Extension-4285f4?style=for-the-badge)](#instalacao)
+[![LGPD](https://img.shields.io/badge/LGPD-dados%20locais-2f855a?style=for-the-badge)](#privacidade)
 
 </div>
 
-## O que e?
+## Visao geral
 
-Uma extensao Chrome leve e segura que monitora automaticamente seu uso do ChatGPT Plus, exibindo:
+O AI Usage Monitor mostra, no popup e no badge da extensao, o percentual de uso e o horario de renovacao das cotas da conta autenticada. A V1.0.1 monitora ChatGPT e Claude em uma unica extensao.
 
-- **Limite de 5 horas** - Controle de mensagens por sessao
-- **Limite semanal** - Controle de uso total na semana
-- **Badge visual** - Percentual de uso na barra de ferramentas
-- **Reset timer** - Countdown ate o proximo reset
+![Exemplo do popup do AI Usage Monitor com Claude selecionado](docs/screenshots/popup-v1.0.1.svg)
 
----
+*Exemplo visual do popup da V1.0.1. Os valores exibidos sao ilustrativos.*
+
+## V1.0.1
+
+Esta atualizacao adiciona o Claude ao monitor que ja acompanhava o ChatGPT.
+
+| Funcionalidade | ChatGPT | Claude |
+|---|:---:|:---:|
+| Limite de 5 horas | Sim | Sim |
+| Limite de 7 dias | Sim | Sim |
+| Percentual no badge | Sim | Sim |
+| Horario de reset | Sim | Sim |
+| Atualizacao manual e automatica | Sim | Sim |
+
+O seletor no popup define qual servico sera exibido e qual percentual aparecera no badge da barra de ferramentas.
 
 ## Funcionalidades
 
-| Recurso | Descricao |
-|---------|-----------|
-| Badge em tempo real | Mostra % de uso na barra de ferramentas |
-| Reset timer | Countdown ate o proximo reset |
-| Cores indicativas | Verde (baixo), amarelo (medio), vermelho (alto) |
-| Auto-refresh | Atualiza a cada 5 minutos |
-| Tema claro/escuro | Opcao de alternancia |
-| Dados locais | Nada sai do seu computador |
+- Seletor de servico entre ChatGPT e Claude.
+- Percentual de uso para as janelas de 5 horas e 7 dias.
+- Contagem regressiva para o proximo reset de cada janela.
+- Badge com a metrica de 5 horas ou 7 dias selecionada.
+- Cores de alerta: verde, amarelo, laranja e vermelho conforme o consumo.
+- Atualizacao automatica a cada 5 minutos e botao para atualizar sob demanda.
+- Tema claro, escuro ou automatico.
+- Exportacao dos dados locais em JSON.
+- Exclusao de todos os dados armazenados pela extensao.
 
----
+## Download
+
+Baixe apenas a versao que precisa pelo seletor de branches do GitHub:
+
+| Branch | Conteudo |
+|---|---|
+| [`master`](../../tree/master) | V1.0, monitoramento somente do ChatGPT |
+| [`release/v1.0.1`](../../tree/release/v1.0.1) | V1.0.1, monitoramento do ChatGPT e Claude |
+
+Na branch desejada, clique em **Code** e depois em **Download ZIP**. O arquivo baixado contem somente aquela versao da extensao.
 
 ## Instalacao
 
-### Passo 1: Baixe o Projeto
+1. Baixe e extraia o ZIP da versao desejada.
+2. Abra `chrome://extensions` no Chrome, Edge, Brave ou Arc.
+3. Ative o **Modo do desenvolvedor**.
+4. Clique em **Carregar sem compactacao**.
+5. Selecione a pasta `extension/` extraida do pacote.
+6. Fixe a extensao na barra de ferramentas, se desejar.
 
-```bash
-git clone https://github.com/USUARIO/UsoGPT.git
-cd UsoGPT
-```
+## Como usar
 
-Ou faca download do ZIP e extraia.
+1. Faca login em [chatgpt.com](https://chatgpt.com) e/ou [claude.ai](https://claude.ai).
+2. Abra o popup da extensao e escolha o servico no campo **Servico**.
+3. Consulte os limites e os horarios de reset.
+4. Em **Configuracoes**, escolha se o badge deve mostrar a janela de 5 horas ou de 7 dias.
+5. Use o botao de atualizar quando precisar buscar os dados imediatamente.
 
-### Passo 2: Abra o Chrome
+Se a conta nao estiver autenticada no servico escolhido, o popup mostrara uma mensagem indicando o site em que o login deve ser feito.
 
-1. Digite `chrome://extensions` na barra de endereco
-2. Ative **Modo desenvolvedor** (canto superior direito)
-3. Clique em **Carregar extensao descompactada**
-4. Selecione a pasta `extension/` deste projeto
+## Tecnologias
 
-### Passo 3: Configure
+| Tecnologia | Uso |
+|---|---|
+| Chrome Extensions Manifest V3 | Estrutura e ciclo de vida da extensao |
+| JavaScript moderno | Consulta, normalizacao e apresentacao dos dados |
+| Chrome Storage Local | Preferencias e dados de uso armazenados localmente |
+| Chrome Alarms | Atualizacao automatica a cada 5 minutos |
+| Fetch API | Requisicoes autenticadas aos servicos web |
+| HTML e CSS | Popup responsivo com tema claro e escuro |
 
-1. Clique no icone da extensao (barra de ferramentas)
-2. Clique em Configuracoes
-3. Escolha qual metrica mostrar no badge:
-   - **5-Hour**: Limite de 5 horas
-   - **7-Day**: Limite semanal
+## Como funciona
 
-### Passo 4: Use
+A extensao usa a sessao ja autenticada no navegador. Nenhuma senha e solicitada ou armazenada.
 
-1. Acesse [chatgpt.com](https://chatgpt.com)
-2. Faca login na sua conta
-3. O badge mostrara seu uso automaticamente
-4. Clique no icone para ver detalhes
+1. Para o ChatGPT, ela obtem o token da sessao e consulta o endpoint de uso autenticado.
+2. Para o Claude, ela identifica a organizacao da sessao e consulta o endpoint de uso correspondente.
+3. Os formatos recebidos sao normalizados para as mesmas janelas de uso: 5 horas e 7 dias.
+4. O resultado e salvo no `chrome.storage.local`; o popup e o badge leem apenas esses dados locais.
 
----
+Os endpoints utilizados sao internos aos servicos web e podem ser alterados pelos respectivos provedores.
 
-## Estrutura do Projeto
+## Privacidade
 
-```
-UsoGPT/
-├── extension/
-│   ├── manifest.json      # Configuracao da extensao
-│   ├── background.js      # Service worker
-│   ├── popup.html         # Interface da extensao
-│   ├── popup.js           # Logica da extensao
-│   ├── styles.css         # Estilos da extensao
-│   └── icons/             # Icones (16, 48, 128px)
-├── README.md              # Esta documentacao
-└── .gitignore             # Arquivos ignorados pelo Git
-```
-
----
-
-## Privacidade e LGPD
-
-### Compromisso com seus dados
-
-- Nenhum dado sai do seu computador
-- Sem analytics ou tracking
-- Sem envio para servidores externos
-- Armazenamento local (Chrome Storage)
-- Opcao de deletar todos os dados
-- Dados mantidos por apenas 30 dias
-
-### O que NAO coletamos
-
-- Senhas ou credenciais
-- Conteudo de conversas
-- Dados de navegacao
-- Informacoes pessoais identificaveis
-
-### O que coletamos (apenas localmente)
-
-- Percentual de uso de cotas
-- Timestamps de medicoes
-- Tipo de plano (Plus, Free, etc.)
-
----
-
-## Como Funciona
-
-### Endpoints Utilizados
-
-A extensao utiliza endpoints oficiais da OpenAI:
-
-```
-GET https://chatgpt.com/backend-api/wham/usage
-Authorization: Bearer <token da sessao>
-```
-
-### Dados Coletados
-
-```json
-{
-  "plan_type": "plus",
-  "rate_limit": {
-    "primary_window": {
-      "used_percent": 45,
-      "limit_window_seconds": 18000,
-      "reset_at": 1234567890
-    },
-    "secondary_window": {
-      "used_percent": 30,
-      "limit_window_seconds": 604800,
-      "reset_at": 1234567890
-    }
-  }
-}
-```
-
----
-
-## Configuracao
-
-### Alterar Intervalo de Atualizacao
-
-Edite `extension/background.js`:
-
-```javascript
-const POLL_INTERVAL = 5; // minutos
-```
-
-### Alterar Metrica do Badge
-
-1. Clique no icone da extensao
-2. Va em Configuracoes
-3. Selecione a metrica desejada
-
----
-
-## Solucao de Problemas
-
-### Badge nao aparece
-
-1. Verifique se esta logado em chatgpt.com
-2. Recarregue a pagina
-3. Clique no icone da extensao e em "Atualizar"
-
-### Dados nao atualizam
-
-1. Verifique sua conexao com a internet
-2. Abra o console (F12) e procure erros
-3. Recarregue a extensao
-
-### Erro de autenticacao
-
-1. Faca logout do chatgpt.com
-2. Faca login novamente
-3. Recarregue a pagina
-
----
+- Os dados de uso e preferencias ficam no `chrome.storage.local`.
+- A extensao nao coleta conversas, prompts, senhas ou historico de navegacao.
+- Os dados locais podem ser exportados ou apagados no popup.
+- O periodo de retencao configurado e de 30 dias.
+- Nao ha analytics nem rastreamento de terceiros.
 
 ## Compatibilidade
 
 | Navegador | Suporte |
-|-----------|---------|
+|---|---|
 | Chrome | Completo |
 | Edge | Completo |
 | Brave | Completo |
 | Arc | Completo |
-| Firefox | Parcial |
+| Firefox | Nao suportado pelo pacote Manifest V3 atual |
 
----
+## Estrutura
+
+```text
+UsoGPT/
+|-- extension/                    # Codigo fonte da V1.0.1
+|-- docs/screenshots/             # Imagens da documentacao
+`-- README.md
+```
+
+## Solucao de problemas
+
+| Situacao | Acao recomendada |
+|---|---|
+| Sem dados para ChatGPT | Confirme o login em `chatgpt.com` e atualize o popup. |
+| Sem dados para Claude | Confirme o login em `claude.ai` e atualize o popup. |
+| Badge nao atualiza | Recarregue a extensao em `chrome://extensions`. |
+| Erro de autenticacao | Saia e entre novamente no servico selecionado. |
 
 ## Licenca
 
-Este projeto esta sob a licença MIT.
-
----
-
-## Contribuindo
-
-Contribuicoes sao bem-vindas!
-
-1. Fork o projeto
-2. Crie uma branch (`git checkout -b feature/nova-feature`)
-3. Commit suas mudancas (`git commit -m 'Adiciona nova feature'`)
-4. Push para a branch (`git push origin feature/nova-feature`)
-5. Abra um Pull Request
-
----
-
-## Agradecimentos
-
-- [ChatGPT Usage Tracker](https://github.com/mikebutash/openai-codex-usage-chrome) - Inspiracao para extensao
-
----
-
-<div align="center">
-
-### Se este projeto foi util, deixe uma estrela!
-
-</div>
+Este projeto esta sob a licenca MIT.

@@ -58,6 +58,9 @@ body.dark-theme .privacy-section { background: #252525; border: 1px solid #40404
 .container { padding: 16px; }
 .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 12px; }
 .header-controls { display: flex; gap: 8px; }
+.provider-selector { display: flex; align-items: center; gap: 8px; margin: -8px 0 16px; font-size: 12px; font-weight: 600; }
+.provider-selector select { flex: 1; padding: 6px 8px; border: 1px solid #d0d0d0; border-radius: 4px; font: inherit; }
+body.dark-theme .provider-selector select { background: #3a3a3a; border-color: #505050; color: #e0e0e0; }
 h1 { font-size: 18px; font-weight: 600; }
 .icon-btn { border-radius: 4px; padding: 6px 12px; cursor: pointer; font-size: 16px; transition: all 0.2s; min-width: 36px; }
 .icon-btn:disabled { opacity: 0.5; cursor: not-allowed; }

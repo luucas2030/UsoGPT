@@ -1,16 +1,18 @@
-// ChatGPT Usage Monitor - LGPD Safe Popup
+// AI Usage Monitor - LGPD Safe Popup
 
 let currentTheme = 'auto';
+let currentProvider = 'chatgpt';
 
 document.addEventListener('DOMContentLoaded', () => {
   initializeTheme();
   loadSettings();
-  loadUsageData();
+  loadProvider();
 
   document.getElementById('settings-toggle').addEventListener('click', toggleSettings);
   document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
   document.getElementById('refresh').addEventListener('click', refreshData);
   document.getElementById('save-settings').addEventListener('click', saveSettings);
+  document.getElementById('provider').addEventListener('change', changeProvider);
   
   // LGPD: Botões de privacidade
   document.getElementById('delete-data')?.addEventListener('click', deleteAllData);
@@ -69,7 +71,7 @@ function loadSettings() {
 function saveSettings() {
   const selected = document.querySelector('input[name="badge-metric"]:checked');
   chrome.storage.local.set({ badgeMetric: selected.value }, () => {
-    chrome.runtime.sendMessage({ action: 'refresh' });
+    chrome.runtime.sendMessage({ action: 'refresh', provider: currentProvider });
     
     const btn = document.getElementById('save-settings');
     btn.textContent = '✓ Salvo!';
@@ -83,6 +85,23 @@ function saveSettings() {
   });
 }
 
+function loadProvider() {
+  chrome.storage.local.get({ activeProvider: 'chatgpt' }, (settings) => {
+    currentProvider = settings.activeProvider;
+    document.getElementById('provider').value = currentProvider;
+    loadUsageData();
+  });
+}
+
+function changeProvider(event) {
+  currentProvider = event.target.value;
+  chrome.storage.local.set({ activeProvider: currentProvider }, () => {
+    chrome.runtime.sendMessage({ action: 'refresh', provider: currentProvider }, () => {
+      loadUsageData();
+    });
+  });
+}
+
 // ── Data Loading ───────────────────────────────────────────
 
 function refreshData() {
@@ -90,7 +109,7 @@ function refreshData() {
   btn.disabled = true;
   btn.textContent = '⟳';
 
-  chrome.runtime.sendMessage({ action: 'refresh' }, () => {
+  chrome.runtime.sendMessage({ action: 'refresh', provider: currentProvider }, () => {
     loadUsageData();
     btn.disabled = false;
     btn.textContent = '↻';
@@ -98,31 +117,40 @@ function refreshData() {
 }
 
 function loadUsageData() {
-  chrome.storage.local.get(['usageData', 'lastError'], (result) => {
-    const loading = document.getElementById('loading');
-    const error = document.getElementById('error');
-    const content = document.getElementById('content');
-    
-    loading.classList.add('hidden');
-    
-    if (result.lastError && !result.usageData) {
-      error.textContent = `Erro: ${result.lastError}`;
-      error.classList.remove('hidden');
-      content.classList.add('hidden');
-      return;
-    }
-    
-    if (!result.usageData) {
-      error.textContent = 'Sem dados. Acesse chatgpt.com primeiro.';
-      error.classList.remove('hidden');
-      content.classList.add('hidden');
-      return;
-    }
-    
-    error.classList.add('hidden');
-    content.classList.remove('hidden');
-    displayUsageData(result.usageData);
-  });
+  if (currentProvider === 'chatgpt') {
+    // Keep the original V1.0 read path for ChatGPT data.
+    chrome.storage.local.get(['usageData', 'lastError'], displayStoredUsageData);
+    return;
+  }
+
+  chrome.runtime.sendMessage({ action: 'getData', provider: 'claude' }, displayStoredUsageData);
+}
+
+function displayStoredUsageData(result) {
+  result = result || {};
+  const loading = document.getElementById('loading');
+  const error = document.getElementById('error');
+  const content = document.getElementById('content');
+
+  loading.classList.add('hidden');
+
+  if (result.lastError && !result.usageData) {
+    error.textContent = `Erro: ${result.lastError}`;
+    error.classList.remove('hidden');
+    content.classList.add('hidden');
+    return;
+  }
+
+  if (!result.usageData) {
+    error.textContent = `Sem dados. Acesse ${currentProvider === 'claude' ? 'claude.ai' : 'chatgpt.com'} primeiro.`;
+    error.classList.remove('hidden');
+    content.classList.add('hidden');
+    return;
+  }
+
+  error.classList.add('hidden');
+  content.classList.remove('hidden');
+  displayUsageData(result.usageData);
 }
 
 function displayUsageData(data) {
@@ -186,7 +214,7 @@ function updateUsageSection(prefix, utilization, resetAt) {
   }
   
   if (resetSpan && resetAt) {
-    const resetDate = new Date(resetAt * 1000);
+    const resetDate = typeof resetAt === 'number' ? new Date(resetAt * 1000) : new Date(resetAt);
     resetSpan.textContent = `Reset: ${getTimeUntil(resetDate)}`;
   }
 }
@@ -244,7 +272,7 @@ function exportData() {
     // Criar download manualmente (sem permissão downloads)
     const a = document.createElement('a');
     a.href = url;
-    a.download = `chatgpt-usage-${new Date().toISOString().split('T')[0]}.json`;
+    a.download = `ai-usage-${new Date().toISOString().split('T')[0]}.json`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
